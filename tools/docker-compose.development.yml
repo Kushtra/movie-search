@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+  postgres:
+    image: 'postgres:latest'
+    restart: always
+    environment:
+      POSTGRES_DATABASE: movie
+      POSTGRES_PASSWORD: V6c9JH3S
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'movie-db:/var/lib/postgres'
+volumes:
+  movie-db: null
