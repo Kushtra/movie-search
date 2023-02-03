@@ -6,16 +6,16 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/',
-      name: 'Movie Search',
-      component: MovieView,
+      path: '/movies',
+      name: 'Movies',
+      component: MovieView
     },
     {
-      path: '/home',
-      name: 'home',
-      component: HomeView,
-    },
-  ],
+      path: '/',
+      name: 'Home',
+      component: HomeView
+    }
+  ]
 });
 
 export default router;

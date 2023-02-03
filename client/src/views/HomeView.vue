@@ -1,5 +1,12 @@
+<script>
+import { RouterLink } from 'vue-router';
+</script>
+
 <template>
   <div>
-    <h1>Test</h1>
+    <nav>
+      <RouterLink to="/movies">Movies</RouterLink>
+    </nav>
+    <h1>Home</h1>
   </div>
 </template>
