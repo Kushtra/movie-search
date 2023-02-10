@@ -11,23 +11,14 @@
     "db:stop": "docker-compose -f tools/docker-compose.development.yml down",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
-  "workspaces": [
-    "server",
-    "client"
-  ],
-  "devDependencies": {
-    "@babel/eslint-parser": "^7.19.1",
-    "@babel/eslint-plugin": "^7.19.1",
-    "@extensionengine/eslint-config": "^3.0.1",
-    "eslint": "^8.33.0",
-    "eslint-config-semistandard": "^17.0.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.6.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-require-sort": "^1.3.0",
-    "eslint-plugin-vue": "^9.9.0",
-    "prettier": "^2.8.3"
+  "workspaces": {
+    "packages": [
+      "server",
+      "client"
+    ],
+    "nohoist": [
+      "@mikro-orm/**",
+      "@nestjs/**"
+    ]
   }
 }

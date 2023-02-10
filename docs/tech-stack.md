@@ -12,6 +12,8 @@ Language: Typescript
 Framework: NestJS
 Database: Postgres
 ORM: MikroORM
+Validator: Zod
+Authentication: JWT
 
 ## Other
 Linter: Eslint

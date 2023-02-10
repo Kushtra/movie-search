@@ -1,12 +1,15 @@
-import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import initializeDatabase from './libs/database';
+import { NestFactory } from '@nestjs/core';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   await app.listen(3000);
 }
 
-initializeDatabase()
-  .then(() => bootstrap())
-  .catch((e) => console.error(e));
+try {
+  bootstrap();
+} catch (e: unknown) {
+  console.error(e);
+  console.error('Unexpected error occured, exiting...');
+  process.exit(1);
+}
