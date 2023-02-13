@@ -1,16 +1,15 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { sign } from 'jsonwebtoken';
+import BaseEntity from 'src/common/base.entity';
 import { REFRESH_TOKEN_SECRET } from 'src/common/config';
 import { User } from 'src/user/user.entity';
 
 @Entity()
-export class RefreshToken {
+export class RefreshToken extends BaseEntity {
   constructor(init?: Partial<RefreshToken>) {
+    super();
     Object.assign(this, init);
   }
-
-  @PrimaryKey()
-  id!: number;
 
   @ManyToOne()
   user!: User;

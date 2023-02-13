@@ -6,7 +6,7 @@ export const LoginValidator = z.object({
 });
 export type LoginDto = z.infer<typeof LoginValidator>;
 
-export const RefreshTokenValidator = z.object({
-  refreshToken: z.string()
+export const TokenRefreshValidator = z.object({
+  refreshTokenStr: z.string()
 });
-export type RefreshTokenDto = z.infer<typeof RefreshTokenValidator>;
+export type TokenRefreshDto = z.infer<typeof TokenRefreshValidator>;

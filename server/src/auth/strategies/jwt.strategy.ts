@@ -1,6 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ACCESS_TOKEN_SECRET } from 'src/common/config';
+import { UserReq } from 'src/common/interfaces';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
@@ -11,11 +12,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: any) {
-    console.log('wtf is payload', payload);
-
+  validate(payload: JWTPayload): UserReq {
     return {
-      userId: payload.userId
+      id: payload.id,
+      username: payload.username
     };
   }
+}
+
+interface JWTPayload {
+  id: number;
+  username: string;
+  iat: number;
+  exp: number;
 }

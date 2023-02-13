@@ -37,12 +37,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/me') // endpoint to test auth
   async test(@Req() req: GuardedRequest) {
-    // TODO: remove endpoint
-    console.log(req.user);
-
-    const userId = req.user.id;
-
-    return this.userService.fetchById(userId);
+    return this.userService.fetchById(req.user.id);
   }
 
   @Get(':id')
