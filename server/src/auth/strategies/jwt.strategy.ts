@@ -13,16 +13,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: JWTPayload): UserReq {
-    return {
-      id: payload.id,
-      username: payload.username
-    };
+    return { id: payload.id };
   }
 }
 
 interface JWTPayload {
   id: number;
-  username: string;
   iat: number;
   exp: number;
 }

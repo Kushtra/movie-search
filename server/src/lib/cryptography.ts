@@ -1,24 +1,16 @@
 import { compare, genSalt, hash } from 'bcrypt';
-import { InternalServer } from 'src/common/exceptions';
+import { InternalServerErrorException } from '@nestjs/common';
 
-export const comparePasswords = async (rawPassword: string, hashedPassword: string): Promise<boolean> => {
-  const result = await compare(rawPassword, hashedPassword).catch(err => {
-    console.error(err);
-    throw new InternalServer();
-  });
-
-  return result;
-};
+export const comparePasswords = (rawPassword: string, hashedPassword: string): Promise<boolean> =>
+  compare(rawPassword, hashedPassword);
 
 export const hashPassword = async (password: string): Promise<string> => {
   try {
     const salt: string = await genSalt();
-
     const hashedPassword = await hash(password, salt);
-
     return hashedPassword;
   } catch (err) {
     console.error(err);
-    throw new InternalServer();
+    throw new InternalServerErrorException();
   }
 };

@@ -15,9 +15,6 @@ export class RefreshToken extends BaseEntity {
   user!: User;
 
   @Property()
-  userAgent!: string;
-
-  @Property()
   ipAddress!: string;
 
   sign(): string {
