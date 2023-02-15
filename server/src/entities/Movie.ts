@@ -1,3 +1,4 @@
+/*
 import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { Producer } from './Producer';
 
@@ -19,9 +20,11 @@ export class Movie {
   @Property()
   name!: string;
 
-  @Property({ nullable: true })
+  @Property()
   termsAccepted: boolean;
 
   @ManyToOne(() => Producer)
   producer: Producer;
 }
+
+*/

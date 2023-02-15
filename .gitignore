@@ -2,7 +2,9 @@
 node_modules
 dist
 dist-ssr
+.env
 *.local
+temp
 
 # Logs
 logs
