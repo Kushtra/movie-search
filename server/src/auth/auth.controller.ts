@@ -11,9 +11,10 @@ import {
 import { sign, verify } from 'jsonwebtoken';
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from 'src/common/config';
 import { TOKEN_EXP_TIME } from 'src/common/constants';
-import { comparePasswords } from 'src/lib/cryptography';
+import { comparePasswords, hashPassword } from 'src/lib/cryptography';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
+import { CreateUserDto, CreateUserValidator } from 'src/user/user.validator';
 import { LoginDto, LoginValidator, TokenRefreshDto, TokenRefreshValidator } from './auth.validator';
 import { RefreshToken } from './refreshToken.entity';
 import { RefreshTokenService } from './refreshToken.service';
@@ -22,6 +23,23 @@ import { AccessAndRefreshToken, AccessToken } from './tokens.interface';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly userService: UserService, private readonly refreshTokenService: RefreshTokenService) {}
+
+  @Post('register') // TODO: polish this endpoint
+  async register(@Ip() ipAddress: string, @Body() createUserBody: CreateUserDto) {
+    const { password, email } = await CreateUserValidator.parseAsync(createUserBody).catch(() => {
+      throw new BadRequestException();
+    });
+    const hashedPassword = await hashPassword(password);
+    const user = new User({ email, password: hashedPassword });
+    user.id = await this.userService.create(user);
+    const refreshToken = new RefreshToken({ ipAddress, user });
+    refreshToken.id = await this.refreshTokenService.create(refreshToken);
+    const accessToken = this.generateAccessToken(user);
+    return {
+      refreshToken: refreshToken.sign(),
+      accessToken
+    };
+  }
 
   @Post('login')
   async login(@Ip() ipAddress: string, @Body() loginBody: LoginDto): Promise<AccessAndRefreshToken> {
@@ -35,8 +53,7 @@ export class AuthController {
     const isPasswordCorrect = await comparePasswords(password, user.password);
     if (!isPasswordCorrect) throw new UnauthorizedException();
     const refreshToken = new RefreshToken({ ipAddress, user });
-    const refreshTokenId = await this.refreshTokenService.create(refreshToken);
-    refreshToken.id = refreshTokenId;
+    refreshToken.id = await this.refreshTokenService.create(refreshToken);
     const accessToken = this.generateAccessToken(user);
     return {
       refreshToken: refreshToken.sign(),

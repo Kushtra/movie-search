@@ -1,11 +1,23 @@
-<script setup>
-import { RouterLink } from 'vue-router';
-defineProps({
-  msg: {
-    type: String,
-    default: 'hello'
+<script>
+import axios from 'axios';
+import { onMounted } from 'vue';
+import { RouterLink, useRouter } from 'vue-router';
+export default {
+  name: 'Movie',
+  setup() {
+    const router = useRouter();
+    onMounted(async () => {
+      try {
+        const { data } = await axios.get('/user/me');
+        console.log(data);
+      } catch (err) {
+        await router.push('/register');
+      }
+    });
+
+    return {};
   }
-});
+};
 </script>
 
 <template>
