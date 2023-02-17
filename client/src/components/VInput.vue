@@ -1,29 +1,19 @@
 <script setup>
-const { id, label, type, placeholder } = defineProps({
+const { id, label, type, placeholder, required, error } = defineProps({
   id: String,
   label: String,
   type: String,
-  placeholder: String
+  placeholder: String,
+  required: Boolean,
+  error: String
 });
-let error = null;
-</script>
-
-<script>
-export default {
-  name: 'CustomInput',
-  data() {
-    return {
-      text: ''
-    };
-  }
-};
 </script>
 
 <template>
   <div class="inputWrapper">
     <label class="inputLabel" :for="id" v-if="label">{{ label }}</label>
-    <input class="input" :id="id" :name="id" :type="type" :placeholder="placeholder" v-model="text" />
-    <span v-if="error"></span>
+    <input class="input" :id="id" :name="id" :type="type" :placeholder="placeholder" :required="required" />
+    <span v-if="error">{{ error }}</span>
   </div>
 </template>
 

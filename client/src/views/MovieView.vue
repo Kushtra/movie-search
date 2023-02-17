@@ -8,10 +8,10 @@ export default {
     const router = useRouter();
     onMounted(async () => {
       try {
-        const { data } = await axios.get('/user/me');
-        console.log(data);
+        const { data } = await axios.get('/api/user/me');
+        if (!data) throw Error;
       } catch (err) {
-        await router.push('/register');
+        await router.push('/');
       }
     });
 
@@ -25,6 +25,6 @@ export default {
     <nav>
       <RouterLink to="/">Home</RouterLink>
     </nav>
-    <h1>{{ msg }}</h1>
+    <h1>MOVIES</h1>
   </div>
 </template>

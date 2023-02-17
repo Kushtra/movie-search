@@ -17,9 +17,8 @@ export class UserController {
       throw new BadRequestException();
     });
     const hashedPassword = await hashPassword(password);
-    const user = new User({ email, password: hashedPassword });
-    const id = await this.userService.create(user);
-    user.id = id;
+    const user = new User({ email, password: hashedPassword }); // await User.create(null, { email, password: hashedPassword });
+    user.id = await this.userService.create(user);
     return user;
   }
 
