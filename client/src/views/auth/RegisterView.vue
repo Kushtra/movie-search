@@ -1,13 +1,14 @@
 <script>
 import VInput from '../../components/VInput.vue';
 import VButton from '../../components/VButton.vue';
-import axios from 'axios';
+import AuthLayout from './index.vue';
+import axios from '../../libs/axios';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
 export default {
   name: 'Register',
-  components: { VButton, VInput },
+  components: { VButton, VInput, AuthLayout },
   setup() {
     const router = useRouter();
     const submit = async evnt => {
@@ -40,14 +41,14 @@ const validateInput = (email, password, repass) => {
 </script>
 
 <template>
-  <main>
+  <AuthLayout>
     <form @submit.prevent="submit" class="registerForm" method="post">
       <VInput id="email" label="Email" placeholder="email@provider.com" />
       <VInput id="password" label="Password" type="password" />
       <VInput id="re-password" label="Repeat password" type="password" />
       <VButton type="submit" text="Submit" />
     </form>
-  </main>
+  </AuthLayout>
 </template>
 
 <style scoped>

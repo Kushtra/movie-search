@@ -2,27 +2,19 @@
 import axios from '../libs/axios';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+
 export default {
-  name: 'Movie',
   setup() {
-    // temp route guard
     const router = useRouter();
     onMounted(async () => {
       try {
-        const { data } = await axios.get('/api/user/me', { withCredentials: false });
+        const { data } = await axios.get('/api/user/me');
         if (!data) throw Error;
+        await router.push('/movies');
       } catch (err) {
         await router.push('/login');
       }
     });
-
-    return {};
   }
 };
 </script>
-
-<template>
-  <div>
-    <h1>MOVIES</h1>
-  </div>
-</template>

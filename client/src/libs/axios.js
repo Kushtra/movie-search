@@ -1,19 +1,21 @@
 import axios from 'axios';
 
-let refresh = false;
+const axiosInstance = axios.create();
 
-axios.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   resp => resp,
   async err => {
-    if (err.response.status === 401 && !refresh) {
-      refresh = true;
-      const { status, data } = await axios.post('refresh', {}, { withCredentials: true });
-      if (status === 200) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-        return axios(err.config);
+    const orgReq = err.config;
+    if (err.response.status === 401 && !orgReq._retry) {
+      orgReq._retry = true;
+      const { status, data } = await axiosInstance.post('/api/auth/refresh', {}, { withCredentials: true });
+      if (status === 201) {
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
+        return axiosInstance(orgReq);
       }
     }
-    refresh = false;
     return err;
   }
 );
+
+export default axiosInstance;
