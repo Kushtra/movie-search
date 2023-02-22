@@ -1,46 +1,37 @@
-<script>
+<script setup>
 import VInput from '@/components/VInput.vue';
 import VButton from '@/components/VButton.vue';
-import axios from '@/libs/axios';
+import { useUsersStore } from '@/stores/users.store';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
-export default {
-  name: 'Register',
-  components: { VButton, VInput },
-  setup() {
-    const router = useRouter();
-    const submit = async evnt => {
-      const form = new FormData(evnt.target);
-      const inputs = Object.fromEntries(form.entries());
-      const inputError = validateInput(inputs.email, inputs.password, inputs['re-password']);
-      if (inputError) return;
-      delete inputs['re-password'];
-      const { data } = await axios.post('/api/auth/register', inputs).catch(e => console.error('err', e));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-      await router.push('/movies');
-    };
-    return { submit };
-  }
+const router = useRouter();
+const userStore = useUsersStore();
+const register = async evnt => {
+  const form = new FormData(evnt.target);
+  const inputs = Object.fromEntries(form.entries());
+  const inputError = validateInput(inputs);
+  if (inputError) return console.error(inputError);
+  await userStore.register(inputs.email, inputs.password);
+  await router.push('/movies');
 };
-
-const validateInput = (email, password, repass) => {
+const validateInput = inputs => {
   // use monorepo common dir
   const formValidator = z.object({
     email: z.string().email(),
     password: z.string().min(6).max(32)
   });
-  const validated = formValidator.safeParse({ email, password });
+  const validated = formValidator.safeParse({ email: inputs.email, password: inputs.password });
   if (!validated.success) {
     console.log(validated.error);
   }
-  if (password !== repass) return 'Password must match';
+  if (inputs.password !== inputs['re-password']) return 'Password must match';
   return false;
 };
 </script>
 
 <template>
-  <form @submit.prevent="submit" class="registerForm" method="post">
+  <form @submit.prevent="register" class="registerForm" method="post">
     <VInput id="email" label="Email" placeholder="email@provider.com" />
     <VInput id="password" label="Password" type="password" />
     <VInput id="re-password" label="Repeat password" type="password" />

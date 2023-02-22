@@ -1,4 +1,4 @@
 <template>
-  <h2>Hi user</h2>
-  <slot></slot>
+  <h3>User</h3>
+  <router-view></router-view>
 </template>

@@ -6,13 +6,9 @@ import { publicPages } from '@/common/constants';
 import { useAuthStore } from '@/stores/auth.store';
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: HomeView
-  },
-  { ...userRoutes },
+  { path: '/', component: HomeView },
   { ...authRoutes },
+  { ...userRoutes },
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 

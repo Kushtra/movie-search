@@ -6,8 +6,8 @@ const authRoutes = {
   path: '/',
   component: GuestLayout,
   children: [
-    { path: 'login', component: Login },
-    { path: 'register', component: Register }
+    { path: '/login', component: Login },
+    { path: '/register', component: Register }
   ]
 };
 

@@ -10,17 +10,19 @@ export const useAuthStore = defineStore({
   }),
   actions: {
     async login(email, password) {
-      const router = useRouter();
-      const user = axios.post('/api/auth/login', { email, password });
-      this.user = user;
-      localStorage.setItem('user', JSON.stringify(user));
-      await router.push('/movies');
+      try {
+        const user = axios.post('/api/auth/login', { email, password });
+        this.user = user;
+        localStorage.setItem('user', JSON.stringify(user));
+        const router = useRouter();
+        router.push(this.returnUrl || '/movies');
+      } catch (err) {
+        console.error(err);
+      }
     },
-    async logout() {
-      const router = useRouter();
+    logout() {
       this.user = null;
       localStorage.removeItem('user');
-      await router.push('/login');
     }
   }
 });

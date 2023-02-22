@@ -8,9 +8,9 @@ export const useUsersStore = defineStore({
     user: {}
   }),
   actions: {
-    async register(userData) {
+    async register(email, password) {
       try {
-        const { data } = await axios.post('/api/auth/register', userData);
+        const { data } = await axios.post('/api/auth/register', { email, password });
         axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
       } catch (err) {
         console.error(err);
