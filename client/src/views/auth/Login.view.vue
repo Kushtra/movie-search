@@ -1,13 +1,12 @@
 <script>
-import VInput from '../../components/VInput.vue';
-import VButton from '../../components/VButton.vue';
-import AuthLayout from './index.vue';
+import VInput from '@/components/VInput.vue';
+import VButton from '@/components/VButton.vue';
 import { useRouter } from 'vue-router';
-import axios from '../../libs/axios';
+import axios from '@/libs/axios';
 
 export default {
   name: 'Login',
-  components: { VInput, VButton, AuthLayout },
+  components: { VInput, VButton },
   setup() {
     const router = useRouter();
     const submit = async evnt => {
@@ -23,12 +22,12 @@ export default {
 </script>
 
 <template>
-  <AuthLayout>
+  <div>
     <h1>Login</h1>
     <form @submit.prevent="submit">
       <VInput id="email" label="Email" placeholder="email@provider.com" />
       <VInput id="password" label="Password" type="password" />
       <VButton type="submit" text="Submit" />
     </form>
-  </AuthLayout>
+  </div>
 </template>

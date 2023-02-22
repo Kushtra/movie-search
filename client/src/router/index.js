@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginView from '../views/auth/LoginView.vue';
-import MovieView from '../views/MovieView.vue';
-import RegisterView from '../views/auth/RegisterView.vue';
-import HomeView from '../views/HomeView.vue';
+import HomeView from '@/views/Home.view.vue';
+import authRoutes from './auth.routes';
+import userRoutes from './users.routes';
+import { publicPages } from '@/common/constants';
+import { useAuthStore } from '@/stores/auth.store';
 
 const routes = [
   {
@@ -10,23 +11,18 @@ const routes = [
     name: 'Home',
     component: HomeView
   },
-  {
-    path: '/login',
-    name: 'Login',
-    component: LoginView
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: RegisterView
-  },
-  {
-    path: '/movies',
-    name: 'Movies',
-    component: MovieView
-  }
+  { ...userRoutes },
+  { ...authRoutes },
+  { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 
-const router = createRouter({ history: createWebHistory(), routes });
+export const router = createRouter({ history: createWebHistory(), routes });
 
-export default router;
+router.beforeEach(async to => {
+  const isAuthRequired = !publicPages.includes(to.path);
+  const authStore = useAuthStore();
+  if (isAuthRequired && !authStore.user) {
+    authStore.returnUrl = to.fullPath;
+    return '/login';
+  }
+});

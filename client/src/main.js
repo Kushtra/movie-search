@@ -1,8 +1,8 @@
 import App from './App.vue';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import router from './router';
-import './libs/axios';
+import { router } from './router';
+import '@/libs/axios';
 
 const app = createApp(App);
 

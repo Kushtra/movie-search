@@ -47,7 +47,7 @@ export class AuthController {
       'Set-Cookie',
       buildCookie('refreshToken', refreshToken.sign(), {
         sameSite: 'strict',
-        path: '/api/auth/refresh',
+        path: '/api/auth',
         httpOnly: true,
         secure: true
       })
@@ -77,7 +77,7 @@ export class AuthController {
       'Set-Cookie',
       buildCookie('refreshToken', refreshToken.sign(), {
         sameSite: 'strict',
-        path: '/api/auth/refresh',
+        path: '/api/auth',
         httpOnly: true,
         secure: true
       })
@@ -97,12 +97,21 @@ export class AuthController {
   }
 
   @Delete('logout')
-  async logout(@Req() request: Request): Promise<void> {
+  async logout(@Req() request: Request, @Res({ passthrough: true }) response: Response): Promise<void> {
     const refreshTokenStr = await TokenRefreshValidator.parseAsync(request.cookies.refreshToken).catch(() => {
       throw new BadRequestException();
     });
     const refreshToken = await this.verifyAndFetchRefreshToken(refreshTokenStr);
     await this.refreshTokenService.delete(refreshToken.id);
+    response.setHeader(
+      'Set-Cookie',
+      buildCookie('refreshToken', '', {
+        sameSite: 'strict',
+        path: '/api/auth',
+        httpOnly: true,
+        secure: true
+      })
+    );
   }
 
   private async verifyAndFetchRefreshToken(refreshStr: string): Promise<RefreshToken> {

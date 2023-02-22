@@ -1,5 +1,5 @@
 <script>
-import axios from '../libs/axios';
+import axios from '@/libs/axios';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 export default {
