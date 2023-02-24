@@ -3,6 +3,7 @@ import VInput from '@/components/VInput.vue';
 import VButton from '@/components/VButton.vue';
 import { useUsersStore } from '@/stores/users.store';
 import { useRouter } from 'vue-router';
+import { Pages } from '@/router/router';
 import { z } from 'zod';
 
 const router = useRouter();
@@ -13,7 +14,7 @@ const register = async evnt => {
   const inputError = validateInput(inputs);
   if (inputError) return console.error(inputError);
   await userStore.register(inputs.email, inputs.password);
-  await router.push('/movies');
+  await router.push(Pages.movies);
 };
 const validateInput = inputs => {
   // use monorepo common dir

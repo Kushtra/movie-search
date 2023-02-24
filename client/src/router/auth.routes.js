@@ -1,14 +1,13 @@
 import GuestLayout from '@/views/auth/Guest.layout.vue';
 import Login from '@/views/auth/Login.view.vue';
 import Register from '@/views/auth/Register.view.vue';
+import { loginPage, registerPage } from '@/constants/pages';
 
-const authRoutes = {
+export const authRoutes = {
   path: '/',
   component: GuestLayout,
   children: [
-    { path: '/login', component: Login },
-    { path: '/register', component: Register }
+    { name: loginPage, path: '/login', component: Login },
+    { name: registerPage, path: '/register', component: Register }
   ]
 };
-
-export default authRoutes;

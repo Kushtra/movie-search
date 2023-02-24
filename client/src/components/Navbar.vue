@@ -1,9 +1,10 @@
 <script setup>
-import axios from '@/libs/axios';
+import { axios } from '@/libs/axios';
 import { RouterLink, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useUsersStore } from '@/stores/users.store';
 import { useAuthStore } from '../stores/auth.store';
+import { Pages } from '@/router/router';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -15,7 +16,7 @@ const logout = async () => {
     console.log(users);
     return;
     await axios.delete('/api/auth/logout', { withCredentials: true });
-    await router.push('/login');
+    await router.push(Pages.login);
   } catch (err) {
     console.error(err);
   }
@@ -24,8 +25,8 @@ const logout = async () => {
 
 <template>
   <header>
-    <RouterLink to="/login" v-if="!users">Login</RouterLink>
-    <RouterLink to="/register" v-if="!users">Register</RouterLink>
+    <RouterLink :to="{ name: 'login' }" v-if="users">Login</RouterLink>
+    <RouterLink :to="{ name: 'register' }" v-if="users">Register</RouterLink>
     <button @click="authStore.logout()" v-else>Logout</button>
   </header>
 </template>

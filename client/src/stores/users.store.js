@@ -1,4 +1,4 @@
-import axios from '@/libs/axios';
+import { axios } from '@/libs/axios';
 import { defineStore } from 'pinia';
 
 export const useUsersStore = defineStore({

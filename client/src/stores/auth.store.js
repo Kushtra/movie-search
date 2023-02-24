@@ -1,6 +1,7 @@
-import axios from '@/libs/axios';
+import { axios } from '@/libs/axios';
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
+import { Pages } from '@/router/router';
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -15,7 +16,7 @@ export const useAuthStore = defineStore({
         this.user = user;
         localStorage.setItem('user', JSON.stringify(user));
         const router = useRouter();
-        router.push(this.returnUrl || '/movies');
+        router.push(this.returnUrl || Pages.movies);
       } catch (err) {
         console.error(err);
       }

@@ -1,6 +1,6 @@
 import { Entity, Property } from '@mikro-orm/core';
 import { EntityRepository } from '@mikro-orm/postgresql';
-import BaseEntity from 'src/common/base.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 @Entity()
 export class User extends BaseEntity {

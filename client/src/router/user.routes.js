@@ -1,10 +1,9 @@
 import UserLayout from '@/views/users/User.layout.vue';
 import Movie from '@/views/Movie.view.vue';
+import { moviesPage } from '@/constants';
 
-const userRoutes = {
+export const userRoutes = {
   path: '/',
   component: UserLayout,
-  children: [{ path: '/movies', component: Movie }]
+  children: [{ name: moviesPage, path: '/movies', component: Movie }]
 };
-
-export default userRoutes;
