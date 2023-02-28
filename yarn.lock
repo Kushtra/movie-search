@@ -966,10 +966,10 @@ asynckit@^0.4.0:
   resolved "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
-axios@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.npmjs.org/axios/-/axios-1.3.3.tgz"
-  integrity sha512-eYq77dYIFS77AQlhzEL937yUBSepBfPIe8FcgEDN35vMNZKMrs81pgnyrQpwfy4NF4b4XWX1Zgx7yX+25w8QJA==
+axios@^1.3.3, axios@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.npmjs.org/axios/-/axios-1.3.4.tgz"
+  integrity sha512-toYm+Bsyl6VC5wSkfkbbNB6ROv7KY93PEBBL6xyDczaIHasAiv4wPqQ/c4RjoQzipxRD2W5g21cOqQulZ7rHwQ==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -1469,7 +1469,7 @@ dotenv-expand@10.0.0:
   resolved "https://registry.npmjs.org/dotenv-expand/-/dotenv-expand-10.0.0.tgz"
   integrity sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==
 
-dotenv@16.0.3:
+dotenv@^16.0.3, dotenv@16.0.3:
   version "16.0.3"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.0.3.tgz"
   integrity sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==
@@ -2782,7 +2782,7 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@^8.0.3, pg@>=8.0, pg@8.9.0:
+pg@^8.0.3, pg@^8.9.0, pg@>=8.0, pg@8.9.0:
   version "8.9.0"
   resolved "https://registry.npmjs.org/pg/-/pg-8.9.0.tgz"
   integrity sha512-ZJM+qkEbtOHRuXjmvBtOgNOXOtLSbxiMiUVMgE4rV6Zwocy03RicCVvDXgx8l4Biwo8/qORUnEqn2fdQzV7KCg==
@@ -3185,6 +3185,7 @@ serve-static@1.15.0:
     "@mikro-orm/postgresql" "^5.6.9"
     "@mikro-orm/reflection" "^5.6.9"
     "@nestjs/common" "^9.3.8"
+    "@nestjs/config" "^2.3.1"
     "@nestjs/core" "^9.3.8"
     "@nestjs/mapped-types" "*"
     "@nestjs/passport" "^9.0.3"
@@ -3445,6 +3446,13 @@ toidentifier@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/toidentifier/-/toidentifier-1.0.1.tgz"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
+
+"tools@file:C:\\Users\\Stipe\\Documents\\Workspace\\Typescript\\movie-search\\tools":
+  version "1.0.0"
+  resolved "file:tools"
+  dependencies:
+    axios "^1.3.4"
+    pg "^8.9.0"
 
 tr46@~0.0.3:
   version "0.0.3"

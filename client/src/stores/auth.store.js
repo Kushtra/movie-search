@@ -1,29 +1,35 @@
-import { axios } from '@/libs/axios';
+import axios from '@/libs/axios';
 import { defineStore } from 'pinia';
-import { useRouter } from 'vue-router';
-import { Pages } from '@/router/router';
+import { Pages } from '@/constants';
 
-export const useAuthStore = defineStore({
+const useAuthStore = defineStore({
   id: 'auth',
   state: () => ({
     user: JSON.parse(localStorage.getItem('user')),
     returnUrl: null
   }),
   actions: {
-    async login(email, password) {
+    async login(formData, router) {
       try {
-        const user = axios.post('/api/auth/login', { email, password });
-        this.user = user;
-        localStorage.setItem('user', JSON.stringify(user));
-        const router = useRouter();
-        router.push(this.returnUrl || Pages.movies);
+        const { data } = await axios.post('/api/auth/login', formData);
+        this.user = data.accessToken;
+        localStorage.setItem('user', JSON.stringify(this.user));
+        return router.push(this.returnUrl || Pages.movies);
       } catch (err) {
         console.error(err);
       }
     },
-    logout() {
-      this.user = null;
-      localStorage.removeItem('user');
+    async logout(router) {
+      try {
+        await axios.delete('/api/auth/logout', { withCredentials: true });
+        this.user = null;
+        localStorage.removeItem('user');
+        return router.push(Pages.login);
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
 });
+
+export default useAuthStore;

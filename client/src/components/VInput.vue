@@ -11,7 +11,7 @@ const { id, label, type, placeholder, required, error } = defineProps({
 
 <template>
   <div class="inputWrapper">
-    <label class="inputLabel" :for="id" v-if="label">{{ label }}</label>
+    <label v-if="label" class="inputLabel" :for="id">{{ label }}</label>
     <input class="input" :id="id" :name="id" :type="type" :placeholder="placeholder" :required="required" />
     <span v-if="error">{{ error }}</span>
   </div>
@@ -22,10 +22,12 @@ const { id, label, type, placeholder, required, error } = defineProps({
   display: grid;
   place-items: center;
 }
+
 .inputLabel {
   color: white;
   font-size: 16px;
 }
+
 .input {
   border-radius: 4px;
   min-width: 200px;

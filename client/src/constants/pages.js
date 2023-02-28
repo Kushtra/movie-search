@@ -1,7 +1,8 @@
-export const moviesPage = 'movies';
+class Pages {
+  static movies = { name: 'movies' };
+  static login = { name: 'login' };
+  static register = { name: 'register' };
+  static home = { name: 'home' };
+}
 
-export const loginPage = 'login';
-
-export const registerPage = 'register';
-
-export const homePage = 'home';
+export default Pages;

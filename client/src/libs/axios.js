@@ -1,9 +1,7 @@
 import Axios from 'axios';
-// import { useAuthStore } from '@/stores/auth.store';
 
-export const axios = Axios.create();
+const axios = Axios.create();
 let refresh = true;
-// const authStore = useAuthStore()
 
 axios.interceptors.response.use(
   resp => resp,
@@ -21,3 +19,5 @@ axios.interceptors.response.use(
     return err;
   }
 );
+
+export default axios;

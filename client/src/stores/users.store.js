@@ -1,7 +1,7 @@
-import { axios } from '@/libs/axios';
+import axios from '@/libs/axios';
 import { defineStore } from 'pinia';
 
-export const useUsersStore = defineStore({
+const useUsersStore = defineStore({
   id: 'users',
   state: () => ({
     users: {},
@@ -18,3 +18,5 @@ export const useUsersStore = defineStore({
     }
   }
 });
+
+export default useUsersStore;

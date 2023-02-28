@@ -1,18 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { authRoutes, userRoutes } from '@/router';
-import { useAuthStore } from '@/stores/auth.store';
-import { publicPages, homePage } from '@/constants';
-import { Pages } from '@/router/router';
+import { useAuthStore } from '@/stores';
+import { Pages, publicPages } from '@/constants';
 import Home from '@/views/Home.view.vue';
 
 const routes = [
-  { name: homePage, path: '/', component: Home },
+  { name: 'home', path: '/', component: Home },
   { ...authRoutes },
   { ...userRoutes },
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 
-export const router = createRouter({ history: createWebHistory(), routes });
+const router = createRouter({ history: createWebHistory(), routes });
 
 router.beforeEach(async to => {
   const isAuthRequired = !publicPages.includes(to.path);
@@ -22,3 +21,5 @@ router.beforeEach(async to => {
     return Pages.login;
   }
 });
+
+export default router;

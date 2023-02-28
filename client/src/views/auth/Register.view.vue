@@ -1,9 +1,9 @@
 <script setup>
 import VInput from '@/components/VInput.vue';
 import VButton from '@/components/VButton.vue';
-import { useUsersStore } from '@/stores/users.store';
+import { useUsersStore } from '@/stores';
 import { useRouter } from 'vue-router';
-import { Pages } from '@/router/router';
+import { Pages } from '@/constants';
 import { z } from 'zod';
 
 const router = useRouter();
@@ -47,9 +47,11 @@ main {
   display: grid;
   place-items: center;
 }
+
 label:hover {
   cursor: pointer;
 }
+
 .registerForm {
   display: grid;
   place-items: center;

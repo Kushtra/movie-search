@@ -1,17 +1,15 @@
 <script setup>
 import VInput from '@/components/VInput.vue';
 import VButton from '@/components/VButton.vue';
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/stores';
 import { useRouter } from 'vue-router';
-import { Pages } from '@/router/router';
 
-const router = useRouter();
 const authStore = useAuthStore();
+const router = useRouter();
 const login = async evnt => {
   const form = new FormData(evnt.target);
-  const { email, password } = Object.fromEntries(form.entries());
-  await authStore.login(email, password);
-  await router.push(Pages.movies);
+  const formData = Object.fromEntries(form.entries());
+  return authStore.login(formData, router);
 };
 </script>
 

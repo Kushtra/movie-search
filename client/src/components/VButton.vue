@@ -1,10 +1,10 @@
 <script setup>
-const { text } = defineProps({
+const { text, type } = defineProps({
   type: String,
   text: String
 });
 </script>
 
 <template>
-  <button>{{ text }}</button>
+  <button :type="type">{{ text }}</button>
 </template>
