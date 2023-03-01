@@ -3,16 +3,17 @@ import { ref } from 'vue';
 
 const props = defineProps({
   title: String,
-  size: Number,
+  size: {
+    type: Number,
+    default: 500
+  },
   released: String,
   poster: String,
   description: String
 });
-const posterPath = `https://image.tmdb.org/t/p/w${props.size || 500}${props.poster}`;
+const posterPath = `https://image.tmdb.org/t/p/w${props.size}${props.poster}`;
 const overview = ref(true);
-const toggle = () => {
-  overview.value = !overview.value;
-};
+const toggle = () => (overview = !overview);
 </script>
 
 <template>
@@ -20,7 +21,8 @@ const toggle = () => {
     <h4>{{ title }} ({{ released.split('-')[0] }})</h4>
     <picture>
       <img v-if="overview" @click="toggle()" :src="posterPath" />
-      <p v-else @click="toggle()">{{ description }}</p>
+      <p v-else @click="toggle">{{ description }}</p>
+      <p @click="toggle"></p>
     </picture>
   </div>
 </template>
