@@ -11,7 +11,8 @@ const useAuthStore = defineStore({
   actions: {
     async login(formData, router) {
       try {
-        const { data } = await axios.post('/api/auth/login', formData);
+        const { data, status } = await axios.post('/api/auth/login', formData);
+        if (status !== 201) throw Error;
         this.user = data.accessToken;
         localStorage.setItem('user', JSON.stringify(this.user));
         return router.push(this.returnUrl || Pages.movies);

@@ -10,7 +10,7 @@ export class MovieService {
     private readonly movieRepository: EntityRepository<Movie>
   ) {}
 
-  async fetchAll(limit: number = 10, offset?: number): Promise<Movie[]> {
+  async fetchAll(limit: number = 20, offset?: number): Promise<Movie[]> {
     const movies = await this.movieRepository.findAll({ limit, offset }).catch(err => {
       console.error(err);
       throw new InternalServerErrorException();

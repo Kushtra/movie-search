@@ -11,8 +11,21 @@ const { user } = storeToRefs(authStore);
 
 <template>
   <header>
-    <RouterLink :to="Pages.login" v-if="!user">Login</RouterLink>
-    <RouterLink :to="Pages.register" v-if="!user">Register</RouterLink>
-    <button @click="authStore.logout(router)" v-else>Logout</button>
+    <h3>Movie Engine</h3>
+    <RouterLink v-if="!user" :to="Pages.login">Login</RouterLink>
+    <RouterLink v-if="!user" :to="Pages.register">Register</RouterLink>
+    <button v-else @click="authStore.logout(router)">Logout</button>
   </header>
 </template>
+
+<style lang="scss" scoped>
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em 1.5em;
+  background-color: purple;
+}
+h3 {
+  color: white;
+}
+</style>
