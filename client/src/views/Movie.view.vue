@@ -1,28 +1,17 @@
-<script>
-import Movie from '@/components/Movie.vue';
+<script setup>
 import axios from '@/libs/axios';
-export default {
-  components: { Movie },
-  data() {
-    return {
-      movies: []
-    };
-  },
-  methods: {
-    async getMovies() {
-      try {
-        const { data, status } = await axios.get('/api/movie');
-        if (status !== 200) return;
-        this.movies = data;
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  },
-  mounted() {
-    this.getMovies();
+import Movie from '@/components/Movie.vue';
+import { onMounted, ref } from 'vue';
+const movies = ref([]);
+onMounted(async () => {
+  try {
+    const { data, status } = await axios.get('/api/movie');
+    if (status !== 200) return;
+    movies.value = data;
+  } catch (err) {
+    console.error(err);
   }
-};
+});
 </script>
 
 <template>
@@ -42,8 +31,8 @@ export default {
   background-color: #ddd;
   max-width: 100vw;
   overflow: hidden;
-  display: flex;
   justify-content: center;
+  display: flex;
   flex-wrap: wrap;
 }
 </style>

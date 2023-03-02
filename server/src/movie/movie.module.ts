@@ -6,7 +6,8 @@ import { MovieService } from './movie.service';
 
 @Module({
   imports: [MikroOrmModule.forFeature([Movie])],
+  controllers: [MovieController],
   providers: [MovieService],
-  controllers: [MovieController]
+  exports: [MovieService]
 })
 export class MovieModule {}

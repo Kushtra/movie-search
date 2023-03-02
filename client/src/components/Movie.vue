@@ -13,16 +13,15 @@ const props = defineProps({
 });
 const posterPath = `https://image.tmdb.org/t/p/w${props.size}${props.poster}`;
 const overview = ref(true);
-const toggle = () => (overview = !overview);
+const toggle = () => (overview.value = !overview.value);
 </script>
 
 <template>
   <div class="movieCard">
     <h4>{{ title }} ({{ released.split('-')[0] }})</h4>
     <picture>
-      <img v-if="overview" @click="toggle()" :src="posterPath" />
+      <img v-if="overview" @click="toggle" :src="posterPath" />
       <p v-else @click="toggle">{{ description }}</p>
-      <p @click="toggle"></p>
     </picture>
   </div>
 </template>
