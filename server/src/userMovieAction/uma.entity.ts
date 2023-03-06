@@ -1,4 +1,4 @@
-import { Entity, Enum, ManyToOne, Property, Unique } from '@mikro-orm/core';
+import { Entity, ManyToOne, Property, Unique, types } from '@mikro-orm/core';
 import { BaseEntity } from 'src/common/base.entity';
 import { Movie } from 'src/movie/movie.entity';
 import { User } from 'src/user/user.entity';
@@ -26,6 +26,6 @@ export class UserMovieAction extends BaseEntity {
   @Property()
   review?: string;
 
-  @Enum({ items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] })
+  @Property({ type: types.tinyint })
   rating?: number;
 }

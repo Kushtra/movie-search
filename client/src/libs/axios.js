@@ -12,7 +12,7 @@ axios.interceptors.response.use(
       const { status, data } = await axios.post('/api/auth/refresh', {}, { withCredentials: true });
       if (status === 201) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-        return axiosInstance(orgReq);
+        return axios(orgReq);
       }
     }
     refresh = true;

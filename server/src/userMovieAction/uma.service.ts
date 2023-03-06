@@ -6,7 +6,6 @@ import { UniqueViolation } from 'src/common/constants';
 import { Movie } from 'src/movie/movie.entity';
 import { User } from 'src/user/user.entity';
 import { UserMovieAction } from './uma.entity';
-import { UpdateUmaDto } from './uma.validator';
 
 @Injectable()
 export class UmaService {
@@ -24,8 +23,26 @@ export class UmaService {
     return id;
   }
 
-  async fetchByUserAndMovie(user: User, movie: Movie): Promise<UserMovieAction> {
-    const uma = await this.umaRepository.findOneOrFail({ user, movie }).catch(err => {
+  async fetchOrCreate(userId: number, movieId: number): Promise<UserMovieAction> {
+    try {
+      const uma = await this.fetchByUserAndMovie(userId, movieId);
+      return uma;
+    } catch (err) {
+      if (!(err instanceof NotFoundException)) throw err;
+      const uma = new UserMovieAction({
+        movie: new Movie({ id: movieId }),
+        user: new User({ id: userId })
+      });
+      uma.id = await this.create(uma).catch(err => {
+        console.error(err);
+        throw new InternalServerErrorException();
+      });
+      return uma;
+    }
+  }
+
+  async fetchByUserAndMovie(userId: number, movieId: number): Promise<UserMovieAction> {
+    const uma = await this.umaRepository.findOneOrFail({ user: userId, movie: movieId }).catch(err => {
       if (err instanceof NotFoundError) throw new NotFoundException('User action not found for this movie');
       console.error(err);
       throw new InternalServerErrorException();
@@ -33,8 +50,8 @@ export class UmaService {
     return uma;
   }
 
-  async update(id: number, umaData: UpdateUmaDto): Promise<void> {
-    await this.umaRepository.nativeUpdate({ id }, umaData).catch(err => {
+  async update(uma: UserMovieAction): Promise<void> {
+    await this.umaRepository.nativeUpdate({ id: uma.id }, uma).catch(err => {
       console.error(err);
       throw new InternalServerErrorException();
     });

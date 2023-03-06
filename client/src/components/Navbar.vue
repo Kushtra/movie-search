@@ -25,6 +25,7 @@ header {
   padding: 0.5em 1.5em;
   background-color: purple;
 }
+
 h3 {
   color: white;
 }
