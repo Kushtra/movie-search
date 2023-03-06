@@ -14,7 +14,8 @@
   "workspaces": {
     "packages": [
       "server",
-      "client"
+      "client",
+      "tools"
     ],
     "nohoist": [
       "@mikro-orm/**",

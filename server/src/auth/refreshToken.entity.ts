@@ -1,6 +1,6 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { sign } from 'jsonwebtoken';
-import BaseEntity from 'src/common/base.entity';
+import { BaseEntity } from 'src/common/base.entity';
 import { REFRESH_TOKEN_SECRET } from 'src/common/config';
 import { User } from 'src/user/user.entity';
 

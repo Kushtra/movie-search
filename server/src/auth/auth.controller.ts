@@ -6,47 +6,88 @@ import {
   Delete,
   UnauthorizedException,
   BadRequestException,
-  NotFoundException
+  NotFoundException,
+  Res,
+  Req
 } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from 'src/common/config';
 import { TOKEN_EXP_TIME } from 'src/common/constants';
-import { comparePasswords } from 'src/lib/cryptography';
+import { buildCookie } from 'src/common/cookieBuilder';
+import { comparePasswords, hashPassword } from 'src/lib/cryptography';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
-import { LoginDto, LoginValidator, TokenRefreshDto, TokenRefreshValidator } from './auth.validator';
+import { CreateUserDto, CreateUserValidator } from 'src/user/user.validator';
+import { LoginDto, LoginValidator, TokenRefreshValidator } from './auth.validator';
 import { RefreshToken } from './refreshToken.entity';
 import { RefreshTokenService } from './refreshToken.service';
-import { AccessAndRefreshToken, AccessToken } from './tokens.interface';
+import { AccessToken } from './tokens.interface';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly userService: UserService, private readonly refreshTokenService: RefreshTokenService) {}
 
+  @Post('register') // TODO: polish this endpoint
+  async register(
+    @Ip() ipAddress: string,
+    @Body() createUserBody: CreateUserDto,
+    @Res({ passthrough: true }) response: Response
+  ): Promise<AccessToken> {
+    const { password, email } = await CreateUserValidator.parseAsync(createUserBody).catch(() => {
+      throw new BadRequestException();
+    });
+    const hashedPassword = await hashPassword(password);
+    const user = new User({ email: email.toLowerCase(), password: hashedPassword });
+    user.id = await this.userService.create(user);
+    const refreshToken = new RefreshToken({ ipAddress, user });
+    refreshToken.id = await this.refreshTokenService.create(refreshToken);
+    const accessToken = this.generateAccessToken(user);
+    response.setHeader(
+      'Set-Cookie',
+      buildCookie('refreshToken', refreshToken.sign(), {
+        sameSite: 'strict',
+        path: '/api/auth',
+        httpOnly: true,
+        secure: true
+      })
+    );
+    return { accessToken };
+  }
+
   @Post('login')
-  async login(@Ip() ipAddress: string, @Body() loginBody: LoginDto): Promise<AccessAndRefreshToken> {
+  async login(
+    @Ip() ipAddress: string,
+    @Body() loginBody: LoginDto,
+    @Res({ passthrough: true }) response: Response
+  ): Promise<AccessToken> {
     const { email, password } = await LoginValidator.parseAsync(loginBody).catch(() => {
       throw new BadRequestException();
     });
-    const user = await this.userService.fetchByEmail(email).catch(err => {
+    const user = await this.userService.fetchByEmail(email.toLowerCase()).catch(err => {
       if (err instanceof NotFoundException) throw new UnauthorizedException();
       throw err;
     });
     const isPasswordCorrect = await comparePasswords(password, user.password);
     if (!isPasswordCorrect) throw new UnauthorizedException();
     const refreshToken = new RefreshToken({ ipAddress, user });
-    const refreshTokenId = await this.refreshTokenService.create(refreshToken);
-    refreshToken.id = refreshTokenId;
+    refreshToken.id = await this.refreshTokenService.create(refreshToken);
     const accessToken = this.generateAccessToken(user);
-    return {
-      refreshToken: refreshToken.sign(),
-      accessToken
-    };
+    response.setHeader(
+      'Set-Cookie',
+      buildCookie('refreshToken', refreshToken.sign(), {
+        sameSite: 'strict',
+        path: '/api/auth',
+        httpOnly: true,
+        secure: true
+      })
+    );
+    return { accessToken };
   }
 
   @Post('refresh')
-  async refreshToken(@Body() tokenRefreshBody: TokenRefreshDto): Promise<AccessToken> {
-    const { refreshTokenStr } = await TokenRefreshValidator.parseAsync(tokenRefreshBody).catch(() => {
+  async refreshToken(@Req() request: Request): Promise<AccessToken> {
+    const refreshTokenStr = await TokenRefreshValidator.parseAsync(request.cookies.refreshToken).catch(() => {
       throw new BadRequestException();
     });
     const refreshToken = await this.verifyAndFetchRefreshToken(refreshTokenStr);
@@ -56,12 +97,21 @@ export class AuthController {
   }
 
   @Delete('logout')
-  async logout(@Body() logoutBody: TokenRefreshDto): Promise<void> {
-    const { refreshTokenStr } = await TokenRefreshValidator.parseAsync(logoutBody).catch(() => {
+  async logout(@Req() request: Request, @Res({ passthrough: true }) response: Response): Promise<void> {
+    const refreshTokenStr = await TokenRefreshValidator.parseAsync(request.cookies.refreshToken).catch(() => {
       throw new BadRequestException();
     });
     const refreshToken = await this.verifyAndFetchRefreshToken(refreshTokenStr);
     await this.refreshTokenService.delete(refreshToken.id);
+    response.setHeader(
+      'Set-Cookie',
+      buildCookie('refreshToken', '', {
+        sameSite: 'strict',
+        path: '/api/auth',
+        httpOnly: true,
+        secure: true
+      })
+    );
   }
 
   private async verifyAndFetchRefreshToken(refreshStr: string): Promise<RefreshToken> {

@@ -7,8 +7,4 @@ export const LoginValidator = z.object({
 
 export type LoginDto = z.infer<typeof LoginValidator>;
 
-export const TokenRefreshValidator = z.object({
-  refreshTokenStr: z.string()
-});
-
-export type TokenRefreshDto = z.infer<typeof TokenRefreshValidator>;
+export const TokenRefreshValidator = z.string().min(8);
