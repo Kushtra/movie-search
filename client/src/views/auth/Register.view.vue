@@ -55,7 +55,7 @@ label:hover {
 .registerForm {
   display: grid;
   place-items: center;
-  gap: 1em;
+  gap: 1rem;
   background-color: rgba(0, 0, 0, 0.75);
   padding: 60px;
 }

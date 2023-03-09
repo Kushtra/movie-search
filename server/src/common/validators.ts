@@ -1,3 +1,3 @@
 import { z } from 'zod';
 
-export const ParamNumValidator = z.number().min(0);
+export const ParamNumValidator = z.number().int().min(1);

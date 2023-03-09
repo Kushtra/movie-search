@@ -1,2 +1,1 @@
-export * from './guardedRequest';
-export * from './userRequest';
+export * from './requests';

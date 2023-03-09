@@ -3,7 +3,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ACCESS_TOKEN_SECRET } from 'src/common/config';
 import { UserReq } from 'src/common/interfaces';
 
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class OptionalStrategy extends PassportStrategy(Strategy, 'optional') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -12,12 +12,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  validate(payload: JWTPayload): UserReq {
+  validate(payload: OptionalPayload): UserReq {
     return { id: payload.id };
   }
 }
 
-interface JWTPayload {
+interface OptionalPayload {
   id: number;
   iat: number;
   exp: number;
