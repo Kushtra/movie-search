@@ -1,5 +1,6 @@
-import { Entity, Property } from '@mikro-orm/core';
+import { Entity, Property, OneToMany, Collection } from '@mikro-orm/core';
 import { BaseEntity } from 'src/common/base.entity';
+import { UserMovieAction } from 'src/userMovieAction/uma.entity';
 
 @Entity()
 export class Movie extends BaseEntity {
@@ -31,4 +32,7 @@ export class Movie extends BaseEntity {
 
   @Property()
   originalTitle!: string;
+
+  @OneToMany(() => UserMovieAction, uma => uma.movie)
+  userMovieActions = new Collection<UserMovieAction>(this);
 }

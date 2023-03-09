@@ -1,7 +1,9 @@
 <script setup>
-import axios from '@/libs/axios';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { Pages, getImageUrl } from '@/constants';
 import Rating from './Rating.vue';
+import { apiUpdateRating, apiUpdateWatched, apiUpdateWatchLater, apiUpdateReview } from './uma.api';
 
 const props = defineProps({
   id: Number,
@@ -14,85 +16,64 @@ const props = defineProps({
     type: String,
     default: '1555-01-01'
   },
-  rating: {
-    type: Number,
-    default: 0
-  },
-  watchLater: {
-    type: Boolean,
-    default: false
-  },
-  watched: {
-    type: Boolean,
-    default: false
-  },
-  review: {
-    type: String,
-    default: ''
-  },
   poster: String,
-  description: String
+  description: String,
+  userMovieActions: Array
 });
-const posterPath = props.size
-  ? `https://image.tmdb.org/t/p/w${props.size}${props.poster}`
-  : `https://image.tmdb.org/t/p/original${props.poster}`;
-const rating = ref(props.rating);
-const updateRating = async newRating => {
-  const oldRating = rating.value;
-  rating.value = newRating;
-  const { status } = await axios.put(`/api/uma/${props.id}/rating`, { rating: newRating });
-  if (status !== 200) rating.value = oldRating;
-};
-const review = ref(props.review);
-const updateReview = async newReview => {
-  // await axios.put('/api/uma/review', { movieId: props.id, review: newReview });
-};
-const watched = ref(props.watched);
-const updateWatched = async () => {
-  watched.value = !watched.value;
-  await axios.put(`/api/uma/${props.id}/watched`, { watched: watched.value });
-};
-const watchLater = ref(props.watchLater);
-const updateWatchLater = async () => {
-  watchLater.value = !watchLater.value;
-  await axios.put(`/api/uma/${props.id}/watchLater`, { watchLater: watchLater.value });
-};
+const router = useRouter();
+const posterPath = getImageUrl(props.poster, props.size);
+const propsUma = props.userMovieActions.length > 0 ? props.userMovieActions[0] : {};
+const uma = ref({
+  rating: propsUma.rating || 0,
+  review: propsUma.review || '',
+  watchLater: !!propsUma.watchLater,
+  watched: !!propsUma.watched
+});
+const updateRating = async newRating => (uma.value.rating = await apiUpdateRating(props.id, uma.value.rating, newRating));
+const updateWatchLater = async () => (uma.value.watchLater = await apiUpdateWatchLater(props.id, !uma.value.watchLater));
+const updateWatched = async () => (uma.value.watched = await apiUpdateWatched(props.id, !uma.value.watched));
+const updateReview = async newReview => (uma.value.review = await apiUpdateReview(props.id, uma.value.review, newReview));
+const goToMovie = () => router.push(Pages.movie(props.id));
 </script>
 
 <template>
   <div class="movieCard">
-    <img :src="posterPath" />
+    <img :src="posterPath" @click="goToMovie" />
     <h4>{{ title }} ({{ released.split('-')[0] }})</h4>
+    <p>{{ description }}</p>
     <div class="actions">
-      <span class="material-icons" aria-label="watch later" :style="watchLater && 'color: purple'" @click="updateWatchLater"
+      <span class="material-icons" aria-label="watch later" :style="uma.watchLater && 'color: purple'" @click="updateWatchLater"
         >watch_later</span
       >
-      <span class="material-icons-outlined" aria-label="watched" :style="watched && 'color: purple'" @click="updateWatched">
+      <span class="material-icons-outlined" aria-label="watched" :style="uma.watched && 'color: purple'" @click="updateWatched">
         done_all
       </span>
-      <span class="material-icons" aria-label="write review" :style="review && 'color: purple'" @click="updateReview">
+      <span class="material-icons" aria-label="write review" :style="uma.review && 'color: purple'" @click="updateReview">
         rate_review
       </span>
-      <Rating :rating="rating" :on-rating-change="updateRating" />
+      <Rating :rating="uma.rating" :on-rating-change="updateRating" />
     </div>
-    <p>{{ description }}</p>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .movieCard {
   position: relative;
-  max-width: 36em;
-  max-height: 24em;
+  max-width: 36rem;
+  max-height: 24rem;
   border: 2px solid red;
-  margin: 0.5em 1em;
+  margin: 0.5rem 1rem;
   display: grid;
   justify-content: center;
 }
 
+img {
+  cursor: pointer;
+}
+
 .actions {
   display: flex;
-  gap: 0.5em;
+  gap: 0.5rem;
   span {
     cursor: pointer;
   }
@@ -100,12 +81,12 @@ const updateWatchLater = async () => {
 
 h4 {
   color: purple;
-  margin-top: 3em;
+  margin-top: 2.5rem;
 }
 
 img {
-  width: 24em;
-  height: 12em;
+  width: 24rem;
+  height: 12rem;
   object-fit: cover;
   transition: scale 0.25s ease;
   background-color: black;

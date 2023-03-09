@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards, BadRequestException } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { GuardedRequest } from 'src/common/interfaces/guardedRequest';
+import { GuardedRequest } from 'src/common/interfaces';
 import { ParamNumValidator } from 'src/common/validators';
 import { hashPassword } from 'src/lib/cryptography';
 import { User } from './user.entity';

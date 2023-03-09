@@ -1,4 +1,4 @@
-import { NotFoundError } from '@mikro-orm/core';
+import { NotFoundError, PopulateHint } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
@@ -47,6 +47,16 @@ export class UmaService {
       console.error(err);
       throw new InternalServerErrorException();
     });
+    return uma;
+  }
+
+  async fetchManyByUserAndMovie(userIds: number[], movieIds: number[]): Promise<UserMovieAction[]> {
+    const uma = await this.umaRepository
+      .find({ $and: [{ user: { $in: userIds } }, { movie: { $in: movieIds } }] }, { populateWhere: PopulateHint.INFER })
+      .catch(err => {
+        console.error(err);
+        throw new InternalServerErrorException();
+      });
     return uma;
   }
 

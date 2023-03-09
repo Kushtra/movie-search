@@ -1,14 +1,20 @@
 <script setup>
 import axios from '@/libs/axios';
-import Movie from '@/components/movie/Movie.vue';
-import { onMounted, ref } from 'vue';
-const movies = ref([]);
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import Rating from '../components/movie/Rating.vue';
+import { getImageUrl } from '@/constants';
+
+const route = useRoute();
+const movie = ref({});
+const uma = ref({
+  rating: 0
+});
 onMounted(async () => {
   try {
-    const { data, status } = await axios.get('/api/movie');
-    if (status !== 200) return;
-    // movies.value = [data[0]];
-    movies.value = data;
+    const { data } = await axios.get(`/api/movie/${route.params.movieId}`);
+    console.log(data);
+    movie.value = data;
   } catch (err) {
     console.error(err);
   }
@@ -16,28 +22,55 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="movieList">
-    <Movie
-      v-for="{ id, title, releaseDate, description, backdropPath } in movies"
-      :key="id"
-      :id="id"
-      :title="title"
-      :poster="backdropPath"
-      :released="releaseDate"
-      :description="description"
-    />
+  <div class="base">
+    <div class="left">
+      <h1>{{ movie.title }} ({{ movie.releaseDate?.split('-')[0] }})</h1>
+      <p>{{ movie.description }}</p>
+      <div class="actions">
+        <button>
+          <span class="material-icons">watch_later</span>
+        </button>
+        <button>
+          <span class="material-icons">watch_later</span>
+        </button>
+        <button>
+          <span class="material-icons">done_all</span>
+        </button>
+        <Rating :rating="uma.rating" :onRatingChange="newRating => (uma.rating = newRating)" />
+      </div>
+    </div>
+    <div class="right">
+      <img :src="getImageUrl(movie.posterPath, 500)" />
+    </div>
   </div>
 </template>
 
-<style>
-.movieList {
-  background-color: #ddd;
-  max-width: 100vw;
-  overflow: hidden;
-  justify-content: center;
+<style lang="scss" scoped>
+.base {
+  width: 100%;
+  padding: 2rem;
+  font-size: 1.25rem;
   display: flex;
-  flex-wrap: wrap;
-  min-height: 100vh;
-  padding: 2em 4em;
+}
+
+.left {
+  width: 40%;
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+  p {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.right {
+  width: 60%;
+  img {
+    float: right;
+  }
+}
+
+.actions {
+  display: flex;
 }
 </style>

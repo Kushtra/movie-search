@@ -6,15 +6,25 @@ import { Pages } from '@/constants';
 
 const router = useRouter();
 const authStore = useAuthStore();
-const { user } = storeToRefs(authStore);
+const { token } = storeToRefs(authStore);
+const logout = async () => {
+  await authStore.logout();
+  return router.push(authStore.returnUrl || Pages.login);
+};
 </script>
 
 <template>
   <header>
-    <h3>Movie Engine</h3>
-    <RouterLink v-if="!user" :to="Pages.login">Login</RouterLink>
-    <RouterLink v-if="!user" :to="Pages.register">Register</RouterLink>
-    <button v-else @click="authStore.logout(router)">Logout</button>
+    <div>
+      <RouterLink :to="Pages.movies">Movie Engine</RouterLink>
+    </div>
+    <div>
+      <template v-if="!token">
+        <RouterLink :to="Pages.login">Login</RouterLink>
+        <RouterLink :to="Pages.register">Register</RouterLink>
+      </template>
+      <button v-else @click="logout">Logout</button>
+    </div>
   </header>
 </template>
 
@@ -22,11 +32,22 @@ const { user } = storeToRefs(authStore);
 header {
   display: flex;
   justify-content: space-between;
-  padding: 0.5em 1.5em;
+  padding: 0.5rem 1.5rem;
   background-color: purple;
+  div {
+    display: flex;
+    gap: 0.25rem;
+  }
 }
 
-h3 {
+a {
+  all: unset;
   color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.25rem;
+  border: 1px solid yellow;
+  border-radius: 0.5rem;
 }
 </style>
