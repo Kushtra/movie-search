@@ -1,10 +1,9 @@
-import { z } from 'zod';
+import { IsEmail, IsStrongPassword } from 'class-validator';
 
-export const LoginValidator = z.object({
-  email: z.string().email(),
-  password: z.string().min(6).max(32)
-});
+export class LoginDto {
+  @IsEmail()
+  email!: string;
 
-export type LoginDto = z.infer<typeof LoginValidator>;
-
-export const TokenRefreshValidator = z.string().min(8);
+  @IsStrongPassword()
+  password!: string;
+}

@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ACCESS_TOKEN_SECRET } from 'src/common/config';
-import { UserReq } from 'src/common/interfaces';
+import { ACCESS_TOKEN_SECRET } from '@/common/config';
+import { UserReq } from '@/common/interfaces';
 
 export class OptionalStrategy extends PassportStrategy(Strategy, 'optional') {
   constructor() {

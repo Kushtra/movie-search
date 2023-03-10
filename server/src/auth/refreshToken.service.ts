@@ -2,7 +2,7 @@ import { NotFoundError } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { RefreshToken } from './refreshToken.entity';
+import { RefreshToken } from '@/auth/refreshToken.entity';
 
 @Injectable()
 export class RefreshTokenService {

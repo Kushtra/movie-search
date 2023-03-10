@@ -1,8 +1,8 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
-import { UmaController } from './uma.controller';
-import { UserMovieAction } from './uma.entity';
-import { UmaService } from './uma.service';
+import { UmaController } from '@/userMovieAction/uma.controller';
+import { UserMovieAction } from '@/userMovieAction/uma.entity';
+import { UmaService } from '@/userMovieAction/uma.service';
 
 @Module({
   imports: [MikroOrmModule.forFeature([UserMovieAction])],

@@ -1,67 +1,49 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards, BadRequestException } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { GuardedRequest } from 'src/common/interfaces';
-import { ParamNumValidator } from 'src/common/validators';
-import { hashPassword } from 'src/lib/cryptography';
-import { User } from './user.entity';
-import { UserService } from './user.service';
-import { CreateUserDto, CreateUserValidator, UpdateUserDto, UpdateUserValidator } from './user.validator';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '@/auth/guards/jwt.guard';
+import { GuardedRequest } from '@/common/interfaces';
+import { hashPassword } from '@/lib/cryptography';
+import { User } from '@/user/user.entity';
+import { UserService } from '@/user/user.service';
+import { CreateUserDto, UpdateUserDto } from '@/user/user.validator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async create(@Body() createUserBody: CreateUserDto): Promise<User> {
-    const { password, email } = await CreateUserValidator.parseAsync(createUserBody).catch(() => {
-      throw new BadRequestException();
-    });
-    const hashedPassword = await hashPassword(password);
-    const user = new User({ email, password: hashedPassword }); // await User.create(null, { email, password: hashedPassword });
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    const hashedPassword = await hashPassword(createUserDto.password);
+    const user = new User({ email: createUserDto.email, password: hashedPassword }); // await User.create(null, { email, password: hashedPassword });
     user.id = await this.userService.create(user);
     return user;
   }
 
   @Get()
-  async findAll(): Promise<User[]> {
+  findAll(): Promise<User[]> {
     return this.userService.fetchAll();
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/me') // endpoint to test auth
-  async test(@Req() req: GuardedRequest) {
+  @Get('/me')
+  findSelf(@Req() req: GuardedRequest) {
     return this.userService.fetchById(req.user.id);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<User> {
-    const validatedId = await ParamNumValidator.parseAsync(+id).catch(() => {
-      throw new BadRequestException();
-    });
-    const user = await this.userService.fetchById(validatedId);
-    return user;
+  findOne(@Param('id') id: number): Promise<User> {
+    return this.userService.fetchById(id);
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateUserBody: UpdateUserDto): Promise<User> {
-    const validatedId = await ParamNumValidator.parseAsync(+id).catch(() => {
-      throw new BadRequestException();
-    });
-    const userData = await UpdateUserValidator.parseAsync(updateUserBody).catch(() => {
-      throw new BadRequestException();
-    });
-    if (!Object.keys(userData).length) throw new BadRequestException('No fields provided');
-    const user = await this.userService.fetchById(validatedId);
-    await this.userService.update(validatedId, userData);
-    Object.assign(user, userData);
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userService.fetchById(id);
+    await this.userService.update(id, updateUserDto);
+    Object.assign(user, updateUserDto);
     return user;
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<void> {
-    const validatedId = await ParamNumValidator.parseAsync(+id).catch(() => {
-      throw new BadRequestException();
-    });
-    await this.userService.delete(validatedId);
+  delete(@Param('id') id: number): Promise<void> {
+    return this.userService.delete(id);
   }
 }

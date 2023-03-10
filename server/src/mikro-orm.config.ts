@@ -1,6 +1,6 @@
 import { Options } from '@mikro-orm/core';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
-import { MIKRO_ORM_DB_NAME } from './common/config';
+import { MIKRO_ORM_DB_NAME } from '@/common/config';
 
 const config: Options = {
   type: 'postgresql',

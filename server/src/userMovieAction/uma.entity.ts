@@ -1,7 +1,7 @@
 import { Entity, ManyToOne, Property, Unique, types } from '@mikro-orm/core';
-import { BaseEntity } from 'src/common/base.entity';
-import { Movie } from 'src/movie/movie.entity';
-import { User } from 'src/user/user.entity';
+import { BaseEntity } from '@/common/base.entity';
+import { Movie } from '@/movie/movie.entity';
+import { User } from '@/user/user.entity';
 
 @Entity()
 @Unique({ properties: ['movie', 'user'] })

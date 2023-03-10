@@ -1,6 +1,6 @@
 import { Entity, Property, OneToMany, Collection } from '@mikro-orm/core';
-import { BaseEntity } from 'src/common/base.entity';
-import { UserMovieAction } from 'src/userMovieAction/uma.entity';
+import { BaseEntity } from '@/common/base.entity';
+import { UserMovieAction } from '@/userMovieAction/uma.entity';
 
 @Entity()
 export class Movie extends BaseEntity {

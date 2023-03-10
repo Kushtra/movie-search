@@ -1,96 +1,59 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Ip,
-  Delete,
-  UnauthorizedException,
-  BadRequestException,
-  NotFoundException,
-  Res,
-  Req
-} from '@nestjs/common';
+import { Controller, Post, Body, Ip, Delete, UnauthorizedException, NotFoundException, Res, Req } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from 'src/common/config';
-import { TOKEN_EXP_TIME } from 'src/common/constants';
-import { buildCookie } from 'src/common/cookieBuilder';
-import { comparePasswords, hashPassword } from 'src/lib/cryptography';
-import { User } from 'src/user/user.entity';
-import { UserService } from 'src/user/user.service';
-import { CreateUserDto, CreateUserValidator } from 'src/user/user.validator';
-import { LoginDto, LoginValidator, TokenRefreshValidator } from './auth.validator';
-import { RefreshToken } from './refreshToken.entity';
-import { RefreshTokenService } from './refreshToken.service';
-import { AccessToken } from './tokens.interface';
+import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '@/common/config';
+import { COOKIE_OPTIONS, TOKEN_EXP_TIME } from '@/common/constants';
+import { comparePasswords, hashPassword } from '@/lib/cryptography';
+import { User } from '@/user/user.entity';
+import { UserService } from '@/user/user.service';
+import { CreateUserDto } from '@/user/user.validator';
+import { LoginDto } from '@/auth/auth.validator';
+import { RefreshToken } from '@/auth/refreshToken.entity';
+import { RefreshTokenService } from '@/auth/refreshToken.service';
+import { AccessToken } from '@/auth/tokens.interface';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly userService: UserService, private readonly refreshTokenService: RefreshTokenService) {}
 
-  @Post('register') // TODO: polish this endpoint
+  @Post('register')
   async register(
     @Ip() ipAddress: string,
-    @Body() createUserBody: CreateUserDto,
+    @Body() createUserDto: CreateUserDto,
     @Res({ passthrough: true }) response: Response
   ): Promise<AccessToken> {
-    const { password, email } = await CreateUserValidator.parseAsync(createUserBody).catch(() => {
-      throw new BadRequestException();
-    });
-    const hashedPassword = await hashPassword(password);
-    const user = new User({ email: email.toLowerCase(), password: hashedPassword });
+    const hashedPassword = await hashPassword(createUserDto.password);
+    const user = new User({ email: createUserDto.email.toLowerCase(), password: hashedPassword });
     user.id = await this.userService.create(user);
     const refreshToken = new RefreshToken({ ipAddress, user });
     refreshToken.id = await this.refreshTokenService.create(refreshToken);
     const accessToken = this.generateAccessToken(user);
-    response.setHeader(
-      'Set-Cookie',
-      buildCookie('refreshToken', refreshToken.sign(), {
-        sameSite: 'strict',
-        path: '/api/auth',
-        httpOnly: true,
-        secure: true
-      })
-    );
+    response.cookie('refreshToken', refreshToken.sign(), COOKIE_OPTIONS);
     return { accessToken };
   }
 
   @Post('login')
   async login(
     @Ip() ipAddress: string,
-    @Body() loginBody: LoginDto,
+    @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response
   ): Promise<AccessToken> {
-    const { email, password } = await LoginValidator.parseAsync(loginBody).catch(() => {
-      throw new BadRequestException();
-    });
-    const user = await this.userService.fetchByEmail(email.toLowerCase()).catch(err => {
+    const user = await this.userService.fetchByEmail(loginDto.email.toLowerCase()).catch(err => {
       if (err instanceof NotFoundException) throw new UnauthorizedException();
       throw err;
     });
-    const isPasswordCorrect = await comparePasswords(password, user.password);
+    const isPasswordCorrect = await comparePasswords(loginDto.password, user.password);
     if (!isPasswordCorrect) throw new UnauthorizedException();
     const refreshToken = new RefreshToken({ ipAddress, user });
     refreshToken.id = await this.refreshTokenService.create(refreshToken);
     const accessToken = this.generateAccessToken(user);
-    response.setHeader(
-      'Set-Cookie',
-      buildCookie('refreshToken', refreshToken.sign(), {
-        sameSite: 'strict',
-        path: '/api/auth',
-        httpOnly: true,
-        secure: true
-      })
-    );
+    response.cookie('refreshToken', refreshToken.sign(), COOKIE_OPTIONS);
     return { accessToken };
   }
 
   @Post('refresh')
   async refreshToken(@Req() request: Request): Promise<AccessToken> {
-    const refreshTokenStr = await TokenRefreshValidator.parseAsync(request.cookies.refreshToken).catch(() => {
-      throw new BadRequestException();
-    });
-    const refreshToken = await this.verifyAndFetchRefreshToken(refreshTokenStr);
+    const refreshToken = await this.verifyAndFetchRefreshToken(request.cookies.refreshToken);
     const user = await this.userService.fetchById(refreshToken.user.id);
     const accessToken = this.generateAccessToken(user);
     return { accessToken };
@@ -98,20 +61,9 @@ export class AuthController {
 
   @Delete('logout')
   async logout(@Req() request: Request, @Res({ passthrough: true }) response: Response): Promise<void> {
-    const refreshTokenStr = await TokenRefreshValidator.parseAsync(request.cookies.refreshToken).catch(() => {
-      throw new BadRequestException();
-    });
-    const refreshToken = await this.verifyAndFetchRefreshToken(refreshTokenStr);
+    const refreshToken = await this.verifyAndFetchRefreshToken(request.cookies.refreshToken);
     await this.refreshTokenService.delete(refreshToken.id);
-    response.setHeader(
-      'Set-Cookie',
-      buildCookie('refreshToken', '', {
-        sameSite: 'strict',
-        path: '/api/auth',
-        httpOnly: true,
-        secure: true
-      })
-    );
+    response.cookie('refreshToken', '', COOKIE_OPTIONS);
   }
 
   private async verifyAndFetchRefreshToken(refreshStr: string): Promise<RefreshToken> {

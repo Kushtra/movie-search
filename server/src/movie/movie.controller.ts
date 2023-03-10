@@ -1,8 +1,8 @@
 import { Req, Get, Controller, UseGuards, Param } from '@nestjs/common';
-import { OptionalGuard } from 'src/auth/guards/optional.guard';
-import { PublicRequest } from 'src/common/interfaces';
-import { Movie } from './movie.entity';
-import { MovieService } from './movie.service';
+import { OptionalGuard } from '@/auth/guards/optional.guard';
+import { PublicRequest } from '@/common/interfaces';
+import { Movie } from '@/movie/movie.entity';
+import { MovieService } from '@/movie/movie.service';
 
 @Controller('movie')
 export class MovieController {
@@ -19,6 +19,8 @@ export class MovieController {
   @UseGuards(OptionalGuard)
   @Get(':movieId')
   async findOne(@Req() req: PublicRequest, @Param('movieId') movieId: number): Promise<Movie> {
+    // add user logic
+    console.log(req.user?.id);
     const movie = await this.movieService.fetchById(movieId);
     return movie;
   }

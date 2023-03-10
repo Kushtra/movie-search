@@ -2,9 +2,9 @@ import { NotFoundError } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { UniqueViolation } from 'src/common/constants';
-import { User } from './user.entity';
-import { UpdateUserDto } from './user.validator';
+import { UniqueViolation } from '@/common/constants';
+import { User } from '@/user/user.entity';
+import { UpdateUserDto } from '@/user/user.validator';
 
 @Injectable()
 export class UserService {

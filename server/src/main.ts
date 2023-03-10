@@ -1,11 +1,10 @@
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
-import cookieParser from 'cookie-parser';
+import initializeMiddleware from '@/common/middleware';
 
 async function startServer() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('/api');
-  app.use(cookieParser());
+  initializeMiddleware(app);
   await app.listen(3000);
 }
 

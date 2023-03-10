@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { RefreshTokenService } from './refreshToken.service';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { RefreshToken } from './refreshToken.entity';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { UserModule } from 'src/user/user.module';
-import { OptionalStrategy } from './strategies/optional.strategy';
+import { AuthController } from '@/auth/auth.controller';
+import { RefreshTokenService } from '@/auth/refreshToken.service';
+import { RefreshToken } from '@/auth/refreshToken.entity';
+import { JwtStrategy } from '@/auth/strategies/jwt.strategy';
+import { OptionalStrategy } from '@/auth/strategies/optional.strategy';
+import { UserModule } from '@/user/user.module';
 
 @Module({
   imports: [MikroOrmModule.forFeature([RefreshToken]), UserModule],

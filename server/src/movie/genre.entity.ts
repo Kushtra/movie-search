@@ -1,5 +1,5 @@
 import { Entity, Property } from '@mikro-orm/core';
-import { BaseEntity } from 'src/common/base.entity';
+import { BaseEntity } from '@/common/base.entity';
 
 @Entity()
 export class Genre extends BaseEntity {

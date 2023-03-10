@@ -2,10 +2,10 @@ import { NotFoundError, PopulateHint } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { UniqueViolation } from 'src/common/constants';
-import { Movie } from 'src/movie/movie.entity';
-import { User } from 'src/user/user.entity';
-import { UserMovieAction } from './uma.entity';
+import { UniqueViolation } from '@/common/constants';
+import { Movie } from '@/movie/movie.entity';
+import { User } from '@/user/user.entity';
+import { UserMovieAction } from '@/userMovieAction/uma.entity';
 
 @Injectable()
 export class UmaService {

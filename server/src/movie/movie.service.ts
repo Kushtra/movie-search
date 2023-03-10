@@ -2,7 +2,7 @@ import { NotFoundError } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { Movie } from './movie.entity';
+import { Movie } from '@/movie/movie.entity';
 
 @Injectable()
 export class MovieService {
